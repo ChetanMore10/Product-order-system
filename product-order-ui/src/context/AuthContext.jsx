@@ -1,0 +1,6 @@
+import { createContext, useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import * as authApi from '../api/authApi'
+const AuthContext = createContext(null)
+export function AuthProvider({ children }) { const navigate = useNavigate(); const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || 'null')); const token = localStorage.getItem('token'); const login = async payload => { const { data } = await authApi.login(payload); localStorage.setItem('token', data.token); localStorage.setItem('user', JSON.stringify({ id: data.userId, username: data.username, roles: [...data.roles] })); setUser({ id: data.userId, username: data.username, roles: [...data.roles] }); const role = [...data.roles].find(r => r === 'SUPER_ADMIN' || r === 'ADMIN' || r === 'USER') || 'USER'; navigate(`/${role === 'SUPER_ADMIN' ? 'super-admin' : role.toLowerCase()}/dashboard`) }; const logout = () => { localStorage.clear(); setUser(null); navigate('/login') }; return <AuthContext.Provider value={{ user, token, roles: user?.roles || [], isAuthenticated: Boolean(token && user), login, logout }}>{children}</AuthContext.Provider> }
+export const useAuth = () => useContext(AuthContext)
