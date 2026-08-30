@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cart_items")
+@Table(name = "cart_items", uniqueConstraints = {@UniqueConstraint(name = "uk_cart_product", columnNames = {"cart_id", "product_id"})})
 @Getter
 @Setter
 @NoArgsConstructor
