@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService
@@ -40,6 +42,13 @@ public class CustomUserDetailsService
                                         new SimpleGrantedAuthority(
                                                 "ROLE_" +
                                                         role.getName()
+                                                                .replaceFirst(
+                                                                        "^ROLE_",
+                                                                        ""
+                                                                )
+                                                                .toUpperCase(
+                                                                        Locale.ROOT
+                                                                )
                                         )
                                 )
                                 .toList()
